@@ -44,97 +44,110 @@ const WriterDashboard: React.FC = () => {
   const totalLikes = myStories.reduce((sum, s) => sum + s.likes.length, 0);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-extrabold text-dark">Writer Dashboard</h1>
-        <div className="flex gap-3">
-          <button onClick={handleDownloadReport}
-            className="bg-green-500 text-white px-5 py-2 rounded-xl font-semibold hover:bg-green-600 transition text-sm">
-            📥 Download Report PDF
-          </button>
-          <Link to="/writer/create" className="bg-primary text-white px-5 py-2 rounded-xl font-semibold hover:bg-indigo-700 transition text-sm">
-            + Create Story
-          </Link>
+    <div style={{ background: '#1C1C28', minHeight: '100vh', padding: '40px 20px', color: '#fff' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 800 }}>Writer Dashboard</h1>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button onClick={handleDownloadReport}
+              style={{ background: '#2A2A3D', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 600 }}>
+              📥 Download Report PDF
+            </button>
+            <Link to="/writer/create" style={{ background: '#FF6740', color: '#fff', padding: '10px 20px', borderRadius: '8px', textDecoration: 'none', fontSize: '14px', fontWeight: 600 }}>
+              + Create Story
+            </Link>
+          </div>
         </div>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Stories', value: myStories.length, icon: '📚' },
-          { label: 'Published',     value: published,         icon: '✅' },
-          { label: 'Total Views',   value: totalViews,        icon: '👁' },
-          { label: 'Total Likes',   value: totalLikes,        icon: '❤️' },
-        ].map(stat => (
-          <div key={stat.label} className="bg-white rounded-2xl shadow p-5 text-center">
-            <div className="text-3xl mb-1">{stat.icon}</div>
-            <div className="text-2xl font-extrabold text-dark">{stat.value}</div>
-            <div className="text-sm text-gray-500">{stat.label}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Stories Table */}
-      {isLoading ? <LoadingSpinner /> : (
-        <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-bold text-dark">My Stories</h2>
-          </div>
-          {myStories.length === 0 ? (
-            <div className="text-center py-16 text-gray-400">
-              <p className="text-5xl mb-4">✍️</p>
-              <p>No stories yet. <Link to="/writer/create" className="text-primary hover:underline">Create your first story!</Link></p>
+        {/* Stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+          {[
+            { label: 'Total Stories', value: myStories.length, icon: '📚' },
+            { label: 'Published',     value: published,         icon: '✅' },
+            { label: 'Total Views',   value: totalViews,        icon: '👁' },
+            { label: 'Total Likes',   value: totalLikes,        icon: '❤️' },
+          ].map(stat => (
+            <div key={stat.label} style={{ background: '#2A2A3D', borderRadius: '14px', padding: '24px', textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', marginBottom: '8px' }}>{stat.icon}</div>
+              <div style={{ fontSize: '24px', fontWeight: 800 }}>{stat.value}</div>
+              <div style={{ fontSize: '13px', color: '#6B6B8A' }}>{stat.label}</div>
             </div>
-          ) : (
-            <div className="divide-y divide-gray-50">
-              {myStories.map(story => (
-                <div key={story._id} className="p-6">
-                  {editingId === story._id ? (
-                    <div className="space-y-3">
-                      <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})}
-                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none" />
-                      <textarea value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})}
-                        className="w-full border border-gray-300 rounded-xl px-4 py-2 resize-none focus:ring-2 focus:ring-primary outline-none" rows={2} />
-                      <select value={editForm.status} onChange={e => setEditForm({...editForm, status: e.target.value})}
-                        className="border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
-                      </select>
-                      <div className="flex gap-2">
-                        <button onClick={() => handleEditSave(story._id)} className="bg-green-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">Save</button>
-                        <button onClick={() => setEditingId(null)} className="border border-gray-300 px-4 py-2 rounded-xl text-sm">Cancel</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-1">
-                          <h3 className="font-bold text-dark text-lg">{story.title}</h3>
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${story.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                            {story.status}
-                          </span>
-                          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{story.category}</span>
-                        </div>
-                        <p className="text-gray-500 text-sm line-clamp-2">{story.description}</p>
-                        <div className="flex gap-4 mt-2 text-xs text-gray-400">
-                          <span>👁 {story.views}</span>
-                          <span>❤️ {story.likes.length}</span>
-                          <span>{new Date(story.createdAt).toLocaleDateString()}</span>
+          ))}
+        </div>
+
+        {/* Stories Table */}
+        {isLoading ? <LoadingSpinner /> : (
+          <div style={{ background: '#2A2A3D', borderRadius: '14px', overflow: 'hidden' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid #3A3A55' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 800, margin: 0 }}>My Stories</h2>
+            </div>
+            {myStories.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: '#6B6B8A' }}>
+                <p style={{ fontSize: '48px', marginBottom: '16px' }}>✍️</p>
+                <p>No stories yet. <Link to="/writer/create" style={{ color: '#FF6740', textDecoration: 'none', fontWeight: 600 }}>Create your first story!</Link></p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {myStories.map(story => (
+                  <div key={story._id} style={{ padding: '20px', borderBottom: '1px solid #3A3A55' }}>
+                    {editingId === story._id ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})}
+                          style={{
+                            width: '100%', boxSizing: 'border-box',
+                            background: '#1C1C28', border: '1.5px solid #3A3A55',
+                            borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', outline: 'none'
+                          }} />
+                        <textarea value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})}
+                          style={{
+                            width: '100%', boxSizing: 'border-box',
+                            background: '#1C1C28', border: '1.5px solid #3A3A55',
+                            borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', outline: 'none', resize: 'none'
+                          }} rows={2} />
+                        <select value={editForm.status} onChange={e => setEditForm({...editForm, status: e.target.value})}
+                          style={{
+                            background: '#1C1C28', border: '1.5px solid #3A3A55',
+                            borderRadius: '8px', padding: '10px', color: '#fff', fontSize: '14px', outline: 'none'
+                          }}>
+                          <option value="draft">Draft</option>
+                          <option value="published">Published</option>
+                        </select>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                          <button onClick={() => handleEditSave(story._id)} style={{ background: '#FF6740', color: '#fff', padding: '10px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Save</button>
+                          <button onClick={() => setEditingId(null)} style={{ background: 'transparent', border: '1px solid #3A3A55', color: '#aaa', padding: '10px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
                         </div>
                       </div>
-                      <div className="flex gap-2 shrink-0">
-                        <Link to={`/story/${story._id}`} className="text-indigo-500 hover:text-indigo-700 text-sm font-medium px-3 py-2 rounded-lg hover:bg-indigo-50">View</Link>
-                        <button onClick={() => startEdit(story)} className="text-blue-500 hover:text-blue-700 text-sm font-medium px-3 py-2 rounded-lg hover:bg-blue-50">Edit</button>
-                        <button onClick={() => handleDelete(story._id)} className="text-red-500 hover:text-red-700 text-sm font-medium px-3 py-2 rounded-lg hover:bg-red-50">Delete</button>
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                            <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0 }}>{story.title}</h3>
+                            <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '20px', fontWeight: 700, background: story.status === 'published' ? 'rgba(76, 175, 80, 0.2)' : 'rgba(255, 193, 7, 0.2)', color: story.status === 'published' ? '#4CAF50' : '#FFC107' }}>
+                              {story.status}
+                            </span>
+                            <span style={{ fontSize: '11px', background: '#3A3A55', padding: '2px 8px', borderRadius: '20px' }}>{story.category}</span>
+                          </div>
+                          <p style={{ color: '#8888A8', fontSize: '13px', margin: 0, lineHeight: 1.5 }}>{story.description}</p>
+                          <div style={{ display: 'flex', gap: '16px', marginTop: '8px', fontSize: '12px', color: '#6B6B8A' }}>
+                            <span>👁 {story.views}</span>
+                            <span>❤️ {story.likes.length}</span>
+                            <span>{new Date(story.createdAt).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                          <Link to={`/story/${story._id}`} style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '8px 12px', border: '1px solid #3A3A55', borderRadius: '8px' }}>View</Link>
+                          <button onClick={() => startEdit(story)} style={{ color: '#aaa', background: 'transparent', border: '1px solid #3A3A55', borderRadius: '8px', cursor: 'pointer', padding: '8px 12px', fontSize: '13px', fontWeight: 600 }}>Edit</button>
+                          <button onClick={() => handleDelete(story._id)} style={{ color: '#FF6740', background: 'transparent', border: '1px solid #3A3A55', borderRadius: '8px', cursor: 'pointer', padding: '8px 12px', fontSize: '13px', fontWeight: 600 }}>Delete</button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

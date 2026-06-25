@@ -17,11 +17,16 @@ const ReadPage: React.FC = () => {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const [chRes, chsRes] = await Promise.all([getChapterById(chapterId!), getChapters(storyId!)]);
-      setChapter(chRes.data);
-      setChapters(chsRes.data);
-      setLoading(false);
-      window.scrollTo(0, 0);
+      try {
+        const [chRes, chsRes] = await Promise.all([getChapterById(chapterId!), getChapters(storyId!)]);
+        setChapter(chRes.data);
+        setChapters(chsRes.data);
+        window.scrollTo(0, 0);
+      } catch (err) {
+        console.error("Failed to load chapter:", err);
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, [chapterId, storyId]);

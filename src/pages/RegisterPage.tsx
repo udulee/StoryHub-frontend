@@ -19,50 +19,69 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-dark to-indigo-900 px-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-10">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-dark">Create Account</h1>
-          <p className="text-gray-500 mt-2">Join StoryHub today</p>
+    <div style={{ background: '#1C1C28', minHeight: '100vh', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ background: '#2A2A3D', borderRadius: '14px', width: '100%', maxWidth: '400px', padding: '30px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 8px' }}>Create Account</h1>
+          <p style={{ color: '#8888A8' }}>Join StoryHub today</p>
         </div>
-        {error && <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 mb-4 text-sm">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {error && <div style={{ background: 'rgba(255,103,64,0.1)', color: '#FF6740', padding: '10px', borderRadius: '8px', marginBottom: '16px', fontSize: '13px' }}>{error}</div>}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', color: '#aaa' }}>Username</label>
             <input type="text" required value={form.username}
               onChange={e => setForm({...form, username: e.target.value})}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: '#1C1C28', border: '1.5px solid #3A3A55',
+                borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', outline: 'none'
+              }}
               placeholder="yourname" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', color: '#aaa' }}>Email</label>
             <input type="email" required value={form.email}
               onChange={e => setForm({...form, email: e.target.value})}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: '#1C1C28', border: '1.5px solid #3A3A55',
+                borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', outline: 'none'
+              }}
               placeholder="your@email.com" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', color: '#aaa' }}>Password</label>
             <input type="password" required minLength={6} value={form.password}
               onChange={e => setForm({...form, password: e.target.value})}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: '#1C1C28', border: '1.5px solid #3A3A55',
+                borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', outline: 'none'
+              }}
               placeholder="min 6 characters" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">I want to...</label>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', color: '#aaa' }}>I want to...</label>
             <select value={form.role} onChange={e => setForm({...form, role: e.target.value})}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none">
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: '#1C1C28', border: '1.5px solid #3A3A55',
+                borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', outline: 'none'
+              }}>
               <option value="reader">Read Stories</option>
               <option value="writer">Write & Publish Stories</option>
             </select>
           </div>
           <button type="submit" disabled={isLoading}
-            className="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-60">
+            style={{
+              padding: '12px', background: '#FF6740', color: '#fff', border: 'none', borderRadius: '8px',
+              fontWeight: 700, cursor: 'pointer', fontSize: '14px', marginTop: '8px'
+            }}>
             {isLoading ? 'Creating account...' : 'Register'}
           </button>
         </form>
-        <p className="text-center text-gray-500 text-sm mt-6">
-          Already have an account? <Link to="/login" className="text-primary font-medium hover:underline">Login</Link>
+        <p style={{ textAlign: 'center', fontSize: '13px', color: '#6B6B8A', marginTop: '20px' }}>
+          Already have an account? <Link to="/login" style={{ color: '#FF6740', textDecoration: 'none', fontWeight: 600 }}>Login</Link>
         </p>
       </div>
     </div>

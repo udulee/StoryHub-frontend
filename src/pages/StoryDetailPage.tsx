@@ -5,6 +5,7 @@ import { fetchStoryById } from '../redux/slices/storySlice';
 import { getChapters, getComments, createComment, deleteComment, toggleLike, downloadStoryPDF } from '../services/api';
 import { Chapter, Comment } from '../types';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import PDFViewer from '../components/common/PDFViewer';
 
 const StoryDetailPage: React.FC = () => {
   const { id }       = useParams<{ id: string }>();
@@ -18,6 +19,10 @@ const StoryDetailPage: React.FC = () => {
   const [commentText, setCommentText] = useState('');
   const [liked,       setLiked]      = useState(false);
   const [likeCount,   setLikeCount]  = useState(0);
+  const [pdfBlobUrl,   setPdfBlobUrl]  = useState<string | null>(null);
+  const [isViewingPDF, setIsViewingPDF] = useState(false);
+  const [pdfLoading,   setPdfLoading]  = useState(false);
+  const [pdfError,     setPdfError]    = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -55,15 +60,45 @@ const StoryDetailPage: React.FC = () => {
     setComments(comments.filter(c => c._id !== commentId));
   };
 
+  const handleViewPDF = async () => {
+    setPdfError(null);
+    if (!pdfBlobUrl) {
+      setPdfLoading(true);
+      try {
+        // axios responseType:'blob' already returns a Blob — do NOT wrap in new Blob([])
+        const res = await downloadStoryPDF(id!);
+        const url = window.URL.createObjectURL(res.data as Blob);
+        setPdfBlobUrl(url);
+      } catch (err: any) {
+        setPdfError(err?.response?.data?.message || 'Failed to load PDF. Please try again.');
+        setPdfLoading(false);
+        return;
+      } finally {
+        setPdfLoading(false);
+      }
+    }
+    setIsViewingPDF(true);
+  };
+
   const handleDownloadPDF = async () => {
-    const res = await downloadStoryPDF(id!);
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${currentStory?.title}.pdf`);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    setPdfError(null);
+    setPdfLoading(true);
+    try {
+      // axios responseType:'blob' already returns a Blob — do NOT wrap in new Blob([])
+      const res = await downloadStoryPDF(id!);
+      const url = window.URL.createObjectURL(res.data as Blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${currentStory?.title || 'story'}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setPdfError(err?.response?.data?.message || 'Failed to download PDF. Please try again.');
+    } finally {
+      setPdfLoading(false);
+    }
   };
 
   if (isLoading) return <LoadingSpinner />;
@@ -98,14 +133,33 @@ const StoryDetailPage: React.FC = () => {
               {liked ? '❤️ Liked' : '🤍 Like'}
             </button>
             {user && (
-              <button onClick={handleDownloadPDF}
-                className="bg-green-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-600 transition">
-                📥 Download PDF
+              <button
+                onClick={handleViewPDF}
+                disabled={pdfLoading}
+                className="bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-600 transition disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {pdfLoading ? '⏳ Loading…' : '📖 View PDF'}
               </button>
+            )}
+            {user && (
+              <button
+                onClick={handleDownloadPDF}
+                disabled={pdfLoading}
+                className="bg-green-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-600 transition disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {pdfLoading ? '⏳ Loading…' : '📥 Download PDF'}
+              </button>
+            )}
+            {pdfError && (
+              <p className="w-full text-red-500 text-sm mt-2">{pdfError}</p>
             )}
           </div>
         </div>
       </div>
+
+      {isViewingPDF && pdfBlobUrl && (
+        <PDFViewer pdfUrl={pdfBlobUrl} onClose={() => setIsViewingPDF(false)} />
+      )}
 
       {/* Chapters */}
       {chapters.length > 0 && (

@@ -19,36 +19,44 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10">
-      <div className="bg-white rounded-3xl shadow-lg p-8">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-3xl text-white font-bold">
+    <div style={{ background: '#1C1C28', minHeight: '100vh', padding: '40px 20px', color: '#fff' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto', background: '#2A2A3D', borderRadius: '14px', padding: '30px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+          <div style={{ width: '64px', height: '64px', background: '#FF6740', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 700 }}>
             {user?.username[0].toUpperCase()}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-dark">{user?.username}</h1>
-            <span className="text-sm font-medium bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full capitalize">{user?.role}</span>
+            <h1 style={{ fontSize: '20px', fontWeight: 800, margin: '0' }}>{user?.username}</h1>
+            <span style={{ fontSize: '12px', background: 'rgba(255,103,64,0.2)', color: '#FF6740', padding: '4px 10px', borderRadius: '20px', textTransform: 'capitalize' }}>{user?.role}</span>
           </div>
         </div>
-        {success && <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl p-3 mb-4 text-sm">{success}</div>}
-        <form onSubmit={handleUpdate} className="space-y-4">
+        {success && <div style={{ background: 'rgba(76, 175, 80, 0.1)', color: '#4CAF50', padding: '10px', borderRadius: '8px', marginBottom: '16px', fontSize: '13px' }}>{success}</div>}
+        <form onSubmit={handleUpdate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', color: '#aaa' }}>Username</label>
             <input type="text" value={form.username} onChange={e => setForm({...form, username: e.target.value})}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none" />
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: '#1C1C28', border: '1.5px solid #3A3A55',
+                borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', outline: 'none'
+              }} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', color: '#aaa' }}>Bio</label>
             <textarea value={form.bio} onChange={e => setForm({...form, bio: e.target.value})} rows={4}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none resize-none"
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: '#1C1C28', border: '1.5px solid #3A3A55',
+                borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', outline: 'none', resize: 'none'
+              }}
               placeholder="Tell readers about yourself..." />
           </div>
-          <button type="submit" className="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
+          <button type="submit" style={{ padding: '12px', background: '#FF6740', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '14px' }}>
             Save Changes
           </button>
         </form>
         <button onClick={() => { dispatch(logout()); navigate('/'); }}
-          className="w-full mt-4 border-2 border-red-300 text-red-500 py-3 rounded-xl font-semibold hover:bg-red-50 transition">
+          style={{ width: '100%', marginTop: '16px', background: 'transparent', border: '1.5px solid #FF6740', color: '#FF6740', padding: '12px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '14px' }}>
           Logout
         </button>
       </div>
