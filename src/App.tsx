@@ -24,7 +24,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
+      <div style={{ minHeight: '100vh', background: '#1C1C28' }}>
         <Navbar />
         <Routes>
           <Route path="/"           element={<HomePage />} />

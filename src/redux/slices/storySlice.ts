@@ -40,22 +40,59 @@ const storySlice = createSlice({
   reducers: { clearCurrentStory: (state) => { state.currentStory = null; } },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchStories.pending,   (state) => { state.isLoading = true; })
+      // fetchStories
+      .addCase(fetchStories.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(fetchStories.fulfilled, (state, action: PayloadAction<Story[]>) => {
-        state.isLoading = false; state.stories = action.payload;
+        state.isLoading = false;
+        state.stories = action.payload;
+      })
+      .addCase(fetchStories.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'Failed to fetch stories';
+      })
+
+      // fetchMyStories
+      .addCase(fetchMyStories.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
       })
       .addCase(fetchMyStories.fulfilled, (state, action: PayloadAction<Story[]>) => {
+        state.isLoading = false;
         state.myStories = action.payload;
       })
+      .addCase(fetchMyStories.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'Failed to fetch your stories';
+      })
+
+      // fetchStoryById
+      .addCase(fetchStoryById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(fetchStoryById.fulfilled, (state, action: PayloadAction<Story>) => {
+        state.isLoading = false;
         state.currentStory = action.payload;
       })
+      .addCase(fetchStoryById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'Failed to fetch story';
+      })
+
+      // addStory
       .addCase(addStory.fulfilled, (state, action: PayloadAction<Story>) => {
         state.myStories.unshift(action.payload);
       })
+
+      // editStory
       .addCase(editStory.fulfilled, (state, action: PayloadAction<Story>) => {
         state.myStories = state.myStories.map(s => s._id === action.payload._id ? action.payload : s);
       })
+
+      // removeStory
       .addCase(removeStory.fulfilled, (state, action: PayloadAction<string>) => {
         state.myStories = state.myStories.filter(s => s._id !== action.payload);
       });

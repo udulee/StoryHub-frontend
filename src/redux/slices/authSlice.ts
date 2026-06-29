@@ -61,7 +61,23 @@ const authSlice = createSlice({
     builder.addCase(register.pending, handlePending);
     builder.addCase(register.fulfilled, handleFulfilled);
     builder.addCase(register.rejected, handleRejected);
-    builder.addCase(fetchMe.fulfilled, (state, action: PayloadAction<User>) => { state.user = action.payload; });
+    builder.addCase(fetchMe.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchMe.fulfilled, (state, action: PayloadAction<User>) => {
+      state.isLoading = false;
+      state.user = action.payload;
+      localStorage.setItem('user', JSON.stringify(action.payload));
+    });
+    builder.addCase(fetchMe.rejected, (state, action: PayloadAction<unknown>) => {
+      state.isLoading = false;
+      state.user = null;
+      state.token = null;
+      state.error = action.payload as string;
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    });
   },
 });
 
